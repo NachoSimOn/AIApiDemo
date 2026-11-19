@@ -31,4 +31,26 @@ app.MapGet("/api/support/status", () =>
     });
 });
 
+app.MapGet("/api/ai/test", async () =>
+{
+    using var httpClient = new HttpClient();
+
+    httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+
+    var requestBody = new
+    {
+        model = "gpt-5.4-mini",
+        input = "Explica en una frase qué es .NET"
+    };
+
+    var response = await httpClient.PostAsJsonAsync(
+        "https://api.openai.com/v1/responses",
+        requestBody
+    );
+
+    var result = await response.Content.ReadAsStringAsync();
+
+    return Results.Ok(result);
+});
+
 app.Run();
